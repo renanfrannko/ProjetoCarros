@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:form id="formListProdutos">
+			<p:dataTable id="tblProdutos" emptyMessage="Nenhum Carro cadastrado"
+				value="#{ProdutoMB.produtos}" var="item" paginator="true" rows="20">
+
+				<f:facet name="header">
+					Concessionária		
+				</f:facet>
+
+				<p:column headerText="Codigo" sortBy="#{item.codigo}">
+					<h:outputText value="#{item.codigo}" />
+				</p:column>
+				<p:column headerText="Marca" sortBy="#{item.nome}">
+					<h:outputText value="#{item.nome}" />
+				</p:column>
+				<p:column headerText="Descricao" sortBy="#{item.descricao}">
+					<h:outputText value="#{item.descricao}" />
+				</p:column>
+				<p:column headerText="Preco" sortBy="#{item.preco}">
+					<h:outputText value="#{item.preco}" />
+				</p:column>
+
+				<p:column headerText="">
+
+					<p:commandButton value="Editar" icon="ui-icon-pencil"
+						actionListener="#{ProdutoMB.prepararEditar}"
+						oncomplete="PF('dlgEditarProd').show();"
+						update=":formEditarProd:pnlEditarProd" />
+
+					<p:commandButton value="Excluir" icon="ui-icon-trash"
+						actionListener="#{ProdutoMB.prepararExcluir}"
+						oncomplete="PF('dlgExcluirProd').show();"
+						update=":formExcluirProd:pnlExcluirProd" />
+
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Adicionar novo Carro"
+						actionListener="#{ProdutoMB.prepararNovo}"
+						oncomplete="PF('dlgProdNovo').show();"
+						update=":formNovoProduto:pnlNovoProduto" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog widgetVar="dlgProdNovo" closable="true" draggable="false"
+			resizable="false" header="Adicionar Carro" modal="true"
+			appendTo="@(body)">
+			<h:form id="formNovoProduto">
+				<h:panelGrid id="pnlNovoProduto" columns="2">
+					<p:outputLabel value="Marca:" />
+					<p:inputText size="30" maxlength="45"
+						value="#{ProdutoMB.produto.nome}" />
+					<p:outputLabel value="Descricao:" />
+					<p:inputText size="30" maxlength="200"
+						value="#{ProdutoMB.produto.descricao}" />
+					<p:outputLabel value="Preco:" />
+					<p:inputText size="30" maxlength="45"
+						value="#{ProdutoMB.produto.preco}" />
+					<p:commandButton value="Adicionar"
+						actionListener="#{ProdutoMB.novo}"
+						oncomplete="PF('dlgProdNovo').hide();"
+						update=":formListProdutos:tblProdutos :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgProdNovo').hide()" />
+				</h:panelGrid>
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="dlgExcluirProd" closable="true" draggable="true"
+			resizable="false" modal="true" appendTo="@(body)"
+			header="Excluir Produto">
+			<h:form id="formExcluirProd">
+				<h:panelGrid id="pnlExcluirProd" columns="2">
+					<h:outputText value="Código" />
+					<h:outputText value="#{ProdutoMB.produto.codigo}" />
+
+					<h:outputText value="Marca" />
+					<h:outputText value="#{ProdutoMB.produto.nome}" />
+
+					<h:outputText value="Descrição" />
+					<h:outputText value="#{ProdutoMB.produto.descricao}" />
+
+					<h:outputText value="Preço" />
+					<h:outputText value="#{ProdutoMB.produto.preco}" />
+
+					<p:commandButton value="Excluir"
+						actionListener="#{ProdutoMB.excluir}"
+						oncomplete="PF('dlgExcluirProd').hide();"
+						update=":formListProdutos:tblProdutos :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgExcluirProd').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="dlgEditarProd" closable="true" draggable="true"
+			resizable="false" modal="true" appendTo="@(body)"
+			header="Editar Produto">
+			<h:form id="formEditarProd">
+				<h:panelGrid id="pnlEditarProd" columns="2">
+					<p:outputLabel value="Código" />
+					<h:outputText value="#{ProdutoMB.produto.codigo}" />
+
+					<p:outputLabel value="Produto" />
+					<p:inputText value="#{ProdutoMB.produto.nome}" size="30"
+						maxlength="45" />
+
+					<p:outputLabel value="Descrição" />
+					<p:inputText value="#{ProdutoMB.produto.descricao}" size="30"
+						maxlength="200" />
+
+					<p:outputLabel value="Preço" />
+					<p:inputText value="#{ProdutoMB.produto.preco}" size="30"
+						maxlength="45" />
+
+					<p:commandButton value="Editar"
+						actionListener="#{ProdutoMB.editar}"
+						oncomplete="PF('dlgEditarProd').hide();"
+						update=":formListProdutos:tblProdutos :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgEditarProd').hide();" />
+				</h:panelGrid>
+			</h:form>
+
+		</p:dialog>
+	</ui:define>
+</ui:composition>
